@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 # VoiceStudio — instalação nativa em LXC (Debian 12 / Ubuntu 22.04+ x86_64)
-# Uso (como root dentro do container):
-#   DOMAIN=voz.seudominio.com.br bash deploy/lxc/install.sh
+# Uso (como root dentro do container) — padrão: Cloudflare Tunnel
+#   CF_TUNNEL_TOKEN=eyJ... bash deploy/lxc/install.sh
 # Variáveis opcionais:
+#   DOMAIN=voicestudio.liderautomacoes.com.br
+#   PROXY=cloudflare (padrão) | caddy (portas 80/443 abertas) | none (proxy externo: NPM/Traefik)
 #   APP_DIR=/opt/voicestudio  DATA_DIR=/var/lib/voicestudio  PORT=3900
 #   REPO_URL=https://github.com/Heitorbueno/VoiceStudio.git  BRANCH=main
 #   GPU=nvidia   (instala a variante CUDA do torch; padrão usa o mesmo lock do Docker)
-#   SKIP_CADDY=1 (se o proxy/TLS ficar fora do container: NPM, Traefik, Cloudflare Tunnel)
 set -euo pipefail
 
-: "${DOMAIN:?defina DOMAIN=voz.seudominio.com.br}"
+DOMAIN="${DOMAIN:-voicestudio.liderautomacoes.com.br}"
+PROXY="${PROXY:-cloudflare}"
+case "$PROXY" in cloudflare|caddy|none) ;; *) echo "PROXY inválido: $PROXY"; exit 1;; esac
+if [ "$PROXY" = "cloudflare" ] && [ -z "${CF_TUNNEL_TOKEN:-}" ] && ! systemctl is-active --quiet cloudflared 2>/dev/null; then
+  echo "Defina CF_TUNNEL_TOKEN (Cloudflare Zero Trust > Networks > Tunnels > Create > Cloudflared > token)"; exit 1
+fi
 APP_DIR="${APP_DIR:-/opt/voicestudio}"
 DATA_DIR="${DATA_DIR:-/var/lib/voicestudio}"
 PORT="${PORT:-3900}"
@@ -54,7 +60,10 @@ echo "==> Frontend web"
 as_svc "cd '$APP_DIR' && bun install --frozen-lockfile && bun run --cwd electron build:web"
 
 echo "==> Configuração"
-BIND=127.0.0.1; [ -n "${SKIP_CADDY:-}" ] && BIND=0.0.0.0  # proxy externo precisa alcançar a porta
+# cloudflare/caddy rodam no próprio LXC -> backend só em loopback.
+# O uvicorn confia no X-Forwarded-For apenas de 127.0.0.1 e usa o IP mais à direita
+# (o que a Cloudflare/Caddy acrescentam), então clientes externos sempre exigem a chave.
+BIND=127.0.0.1; [ "$PROXY" = "none" ] && BIND=0.0.0.0
 ENV_FILE=/etc/voicestudio.env
 if [ ! -f "$ENV_FILE" ]; then
   KEY="$(python3 -c 'import secrets;print(secrets.token_urlsafe(32))')"
@@ -69,6 +78,7 @@ OMNIVOICE_PORT=$PORT
 OMNIVOICE_API_KEY=$KEY
 OMNIVOICE_ALLOWED_HOSTS=$DOMAIN
 OMNIVOICE_ANALYTICS_DISABLED=1
+FORWARDED_ALLOW_IPS=127.0.0.1
 # HF_TOKEN=hf_xxx   # opcional: modelos gated / downloads mais rápidos
 EOF
   chmod 600 "$ENV_FILE"
@@ -80,7 +90,7 @@ sed -i "s#__APP_DIR__#$APP_DIR#g; s#__DATA_DIR__#$DATA_DIR#g" /etc/systemd/syste
 systemctl daemon-reload
 systemctl enable --now voicestudio
 
-if [ -z "${SKIP_CADDY:-}" ]; then
+if [ "$PROXY" = "caddy" ]; then
   echo "==> Caddy (HTTPS automático)"
   apt-get install -y -qq debian-keyring debian-archive-keyring apt-transport-https gnupg
   curl -1sLf https://dl.cloudsmith.io/public/caddy/stable/gpg.key | gpg --dearmor --yes -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
@@ -88,6 +98,21 @@ if [ -z "${SKIP_CADDY:-}" ]; then
   apt-get update -qq && apt-get install -y -qq caddy
   sed "s#__DOMAIN__#$DOMAIN#g; s#__PORT__#$PORT#g" "$APP_DIR/deploy/lxc/Caddyfile" > /etc/caddy/Caddyfile
   systemctl reload caddy || systemctl restart caddy
+fi
+
+if [ "$PROXY" = "cloudflare" ]; then
+  echo "==> Cloudflare Tunnel (cloudflared)"
+  if ! command -v cloudflared >/dev/null; then
+    install -d -m 0755 /usr/share/keyrings
+    curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg -o /usr/share/keyrings/cloudflare-main.gpg
+    echo "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main" > /etc/apt/sources.list.d/cloudflared.list
+    apt-get update -qq && apt-get install -y -qq cloudflared
+  fi
+  if [ -n "${CF_TUNNEL_TOKEN:-}" ] && ! systemctl is-active --quiet cloudflared; then
+    cloudflared service install "$CF_TUNNEL_TOKEN"
+  fi
+  systemctl enable --now cloudflared
+  echo "    No painel do túnel, Public Hostname: $DOMAIN -> HTTP -> 127.0.0.1:$PORT"
 fi
 
 echo "==> Aguardando /health"
