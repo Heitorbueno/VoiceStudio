@@ -1,0 +1,22 @@
+[Unit]
+Description=VoiceStudio (TTS, clonagem de voz, dublagem, transcrição)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=voicestudio
+Group=voicestudio
+WorkingDirectory=__APP_DIR__
+EnvironmentFile=/etc/voicestudio.env
+ExecStart=__APP_DIR__/.venv/bin/python backend/docker_entrypoint.py
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=300
+LimitNOFILE=65536
+NoNewPrivileges=true
+ProtectSystem=full
+ReadWritePaths=__APP_DIR__ __DATA_DIR__ /home/voicestudio
+
+[Install]
+WantedBy=multi-user.target

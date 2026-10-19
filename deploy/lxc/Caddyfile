@@ -1,0 +1,18 @@
+__DOMAIN__ {
+	encode zstd gzip
+
+	request_body {
+		max_size 2GB
+	}
+
+	reverse_proxy 127.0.0.1:__PORT__ {
+		# Geração em streaming (TTS/SSE/WebSocket) sem buffer
+		flush_interval -1
+		# Descarta X-Forwarded-* vindos do cliente e define os reais
+		header_up -Forwarded
+		transport http {
+			read_timeout 30m
+			write_timeout 30m
+		}
+	}
+}
