@@ -3704,5 +3704,21 @@
       "remove_file": "Verwijderen",
       "no_matches": "Geen resultaten voor \"{{query}}\"."
     }
+  },
+  "mcp_connector": {
+    "title": "Claude-/ChatGPT-connector",
+    "desc": "Voeg deze URL toe als aangepaste connector in Claude of ChatGPT. Elke nieuwe verbinding vraagt hier om je goedkeuring.",
+    "url_label": "Connector-URL",
+    "copy": "URL kopiëren",
+    "copied": "Gekopieerd",
+    "empty": "Nog geen connector geautoriseerd.",
+    "load_failed": "Connector laden mislukt",
+    "revoke": "{{name}} intrekken",
+    "revoke_confirm": "Toegang voor ‘{{name}}’ intrekken? Hij moet opnieuw worden geautoriseerd om VoiceStudio te gebruiken.",
+    "authorize_title": "Connector autoriseren",
+    "authorize_desc": "{{name}} ({{host}}) wil VoiceStudio-tools gebruiken: spraak genereren, stemmen klonen en audio transcriberen.",
+    "approve": "Toestaan",
+    "deny": "Weigeren",
+    "expired": "Dit autorisatieverzoek is verlopen. Start de verbinding opnieuw vanuit Claude of ChatGPT."
   }
 }

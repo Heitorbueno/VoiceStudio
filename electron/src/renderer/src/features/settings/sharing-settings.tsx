@@ -20,6 +20,7 @@ import { getBridge } from '@/components/bridge';
 import { apiJson, describeError } from '@/lib/api/client';
 import { SettingsRow, SettingsSection } from './settings-layout';
 import { McpBindingsSettings } from './mcp-bindings-settings';
+import { McpConnectorSettings } from './mcp-connector-settings';
 import { RemoteBackendSettings } from './remote-backend-settings';
 
 interface NetworkState {
@@ -451,6 +452,7 @@ export function SharingSettings() {
           </p>
         )}
       </SettingsSection>
+      <McpConnectorSettings />
       <McpBindingsSettings />
     </>
   );

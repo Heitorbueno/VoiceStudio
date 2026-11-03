@@ -274,8 +274,12 @@ class BrowserGuardMiddleware:
     refusal sent to an allowed origin still carries CORS headers.
     """
 
-    def __init__(self, app, is_public_path=None):
+    def __init__(self, app, is_public_path=None, allows_cross_site=None):
         self.app = app
+        # Endpoints that take no ambient credential (no cookie, no session):
+        # a request "from another site" cannot ride on anything there, so the
+        # cross-site check would only block legitimate OAuth clients.
+        self.allows_cross_site = allows_cross_site or (lambda _path: False)
         # Paths the auth gates also leave open (SPA shell, assets, credential
         # exchange) skip the host check: their content is public or they
         # validate a secret themselves, and a remote UI on a custom host name
@@ -294,6 +298,8 @@ class BrowserGuardMiddleware:
         ):
             return HOST_DETAIL
         unsafe = scope["type"] != "http" or method not in SAFE_HTTP_METHODS
+        if unsafe and scope["type"] == "http" and self.allows_cross_site(scope.get("path", "")):
+            return None
         return CROSS_SITE_DETAIL if unsafe and is_cross_site(connection) else None
 
     async def __call__(self, scope, receive, send) -> None:

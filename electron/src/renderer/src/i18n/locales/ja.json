@@ -3704,5 +3704,21 @@
       "remove_file": "削除",
       "no_matches": "「{{query}}」に一致する項目はありません。"
     }
+  },
+  "mcp_connector": {
+    "title": "Claude / ChatGPT コネクタ",
+    "desc": "この URL を Claude または ChatGPT のカスタムコネクタとして追加してください。新しい接続のたびにここで承認が必要です。",
+    "url_label": "コネクタ URL",
+    "copy": "URL をコピー",
+    "copied": "コピーしました",
+    "empty": "承認済みのコネクタはまだありません。",
+    "load_failed": "コネクタを読み込めませんでした",
+    "revoke": "{{name}} のアクセスを取り消す",
+    "revoke_confirm": "「{{name}}」のアクセスを取り消しますか？VoiceStudio を使うには再度承認が必要です。",
+    "authorize_title": "コネクタを承認",
+    "authorize_desc": "{{name}}（{{host}}）が VoiceStudio のツール（音声生成、声のクローン、音声の文字起こし）を使おうとしています。",
+    "approve": "許可",
+    "deny": "拒否",
+    "expired": "この承認リクエストは期限切れです。Claude または ChatGPT から接続し直してください。"
   }
 }

@@ -3704,5 +3704,21 @@
       "remove_file": "移除",
       "no_matches": "没有与“{{query}}”匹配的结果。"
     }
+  },
+  "mcp_connector": {
+    "title": "Claude / ChatGPT 连接器",
+    "desc": "将此 URL 作为自定义连接器添加到 Claude 或 ChatGPT。每个新连接都需要在这里获得你的批准。",
+    "url_label": "连接器 URL",
+    "copy": "复制 URL",
+    "copied": "已复制",
+    "empty": "尚未授权任何连接器。",
+    "load_failed": "无法加载连接器",
+    "revoke": "撤销 {{name}}",
+    "revoke_confirm": "要撤销“{{name}}”的访问权限吗？之后需重新授权才能使用 VoiceStudio。",
+    "authorize_title": "授权连接器",
+    "authorize_desc": "{{name}}（{{host}}）想要使用 VoiceStudio 的工具：生成语音、克隆声音和转录音频。",
+    "approve": "允许",
+    "deny": "拒绝",
+    "expired": "此授权请求已过期。请从 Claude 或 ChatGPT 重新发起连接。"
   }
 }

@@ -35,6 +35,7 @@ class PrincipalKind(str, Enum):
     PIN = "pin"
     API_KEY = "api_key"
     ADMIN_SESSION = "admin_session"
+    MCP_OAUTH = "mcp_oauth"
 
 
 class CredentialTransport(str, Enum):
@@ -324,6 +325,25 @@ def _attach_principal(connection, principal: AuthPrincipal) -> AuthPrincipal:
     return principal
 
 
+def is_mcp_path(path: str) -> bool:
+    return path == "/mcp" or path.startswith("/mcp/")
+
+
+def is_mcp_oauth_token(value: str) -> bool:
+    from services.mcp_oauth import ACCESS_PREFIX
+
+    return value.startswith(ACCESS_PREFIX)
+
+
+def _mcp_oauth_client(token: str) -> str | None:
+    from services.mcp_oauth import verify_access_token
+
+    try:
+        return verify_access_token(token)
+    except OSError:
+        return None
+
+
 def _candidate_principal(
     connection,
     candidate: _CredentialCandidate,
@@ -335,6 +355,19 @@ def _candidate_principal(
     A WebSocket ticket is single-use: validating one consumes it.
     """
     principal: AuthPrincipal | None = None
+    if candidate.transport is CredentialTransport.HEADER and is_mcp_oauth_token(candidate.value):
+        # Connector tokens (Claude / ChatGPT) are scoped to the MCP endpoint and
+        # carry consume rights only; anywhere else they prove nothing.
+        if is_mcp_path(_path(connection)):
+            client_id = _mcp_oauth_client(candidate.value)
+            if client_id is not None:
+                principal = AuthPrincipal(
+                    PrincipalKind.MCP_OAUTH,
+                    CONSUME_CAPABILITIES,
+                    credential_id=f"mcp-oauth:{client_id}",
+                    transport=candidate.transport,
+                )
+        return principal
     if (
         candidate.allow_master
         and credential_matches(candidate.value, configured_key)

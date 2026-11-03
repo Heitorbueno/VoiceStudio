@@ -3704,5 +3704,21 @@
       "remove_file": "Kaldır",
       "no_matches": "\"{{query}}\" için eşleşme yok."
     }
+  },
+  "mcp_connector": {
+    "title": "Claude / ChatGPT bağlayıcısı",
+    "desc": "Bu URL’yi Claude veya ChatGPT’de özel bağlayıcı olarak ekleyin. Her yeni bağlantı burada onayınızı ister.",
+    "url_label": "Bağlayıcı URL’si",
+    "copy": "URL’yi kopyala",
+    "copied": "Kopyalandı",
+    "empty": "Henüz yetkilendirilmiş bağlayıcı yok.",
+    "load_failed": "Bağlayıcı yüklenemedi",
+    "revoke": "{{name}} erişimini iptal et",
+    "revoke_confirm": "“{{name}}” erişimi iptal edilsin mi? VoiceStudio’yu kullanmak için yeniden yetkilendirilmesi gerekir.",
+    "authorize_title": "Bağlayıcıyı yetkilendir",
+    "authorize_desc": "{{name}} ({{host}}) VoiceStudio araçlarını kullanmak istiyor: konuşma üretme, ses klonlama ve ses yazıya dökme.",
+    "approve": "İzin ver",
+    "deny": "Reddet",
+    "expired": "Bu yetkilendirme isteğinin süresi doldu. Bağlantıyı Claude veya ChatGPT’den yeniden başlatın."
   }
 }

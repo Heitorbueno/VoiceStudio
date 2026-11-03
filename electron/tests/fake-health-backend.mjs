@@ -100,6 +100,8 @@ export const DEFAULT_FIXTURES = {
   // Settings, gallery and long-form routes. Shapes follow the renderer's own types; keep each
   // as empty/idle as the real backend is on a fresh install.
   '/api/mcp/bindings': [],
+  '/api/mcp/oauth/info': { mcp_url: 'http://127.0.0.1:3900/mcp' },
+  '/api/mcp/oauth/connections': [],
   '/personalities': [],
   '/pronunciation': [],
   '/archetypes': { items: [], total: 0, offset: 0, limit: 60 },

@@ -39,7 +39,23 @@ const steps = [
   { label: 'setup.enter_studio', icon: SparklesIcon },
 ] as const;
 
+/**
+ * Routes that must render without the first-run wizard. The connector approval
+ * (`/oauth/authorize` lands there) only needs the operator signed in, and the
+ * "setup done" marker is per browser: approving from another device would
+ * otherwise hit the wizard instead of the consent screen.
+ */
+export function isSetupExemptHash(hash: string): boolean {
+  return /^#\/mcp-authorize(?:[/?]|$)/.test(hash);
+}
+
 export function SetupGate({ children }: { children: ReactNode }) {
+  if (typeof window !== 'undefined' && isSetupExemptHash(window.location.hash))
+    return <>{children}</>;
+  return <SetupWizardGate>{children}</SetupWizardGate>;
+}
+
+function SetupWizardGate({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const appearance = useAppearance();

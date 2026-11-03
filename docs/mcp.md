@@ -153,6 +153,33 @@ Keep this on a trusted LAN or behind TLS (Tailscale Serve, a reverse proxy
 with HTTPS) — the MCP transport is not authenticated, so don't expose it on
 the open internet.
 
+### Claude and ChatGPT custom connectors (remote, OAuth)
+
+A backend reachable over HTTPS (for example the LXC + Cloudflare Tunnel setup
+in [`deploy/lxc`](../deploy/lxc/README.md)) can be added as a custom connector
+in Claude (claude.ai / Claude Desktop → *Connectors* → *Add custom connector*)
+or ChatGPT (developer mode → *Connectors*):
+
+1. Copy the URL from **Settings → Sharing → Claude / ChatGPT connector**
+   (`https://<your-domain>/mcp`).
+2. Paste it into the connector dialog. The client registers itself and opens
+   VoiceStudio in your browser.
+3. Sign in if asked, check the client and host shown, and click **Allow**.
+
+The connector never sees the operator API key. VoiceStudio implements OAuth
+2.1 for it: dynamic client registration limited to the Claude and ChatGPT
+redirect hosts, authorization code with PKCE (S256), operator approval of every
+connection, 1-hour access tokens and rotating 30-day refresh tokens. A
+connector token is accepted on `/mcp` only, with the same rights as a share-PIN
+guest (generate, clone, transcribe), never the admin API. Revoke a connection
+from the same Settings card. State lives in `<data dir>/mcp_oauth.json`
+(hashes only, mode 0600).
+
+Requirements: `OMNIVOICE_API_KEY` set (the remote gate that asks for OAuth),
+`OMNIVOICE_PUBLIC_URL=https://<your-domain>` (pins the issuer and metadata
+URLs) and `OMNIVOICE_MCP_ALLOWED_HOSTS=<your-domain>` (the MCP transport's
+host allowlist). The LXC installer writes all three.
+
 ### stdio (clients that only speak stdio)
 
 Use the bundled shim — it proxies stdio ↔ the mounted HTTP endpoint. Drop
