@@ -18,6 +18,7 @@ can never reach the admin API.
 from __future__ import annotations
 
 import base64
+import contextlib
 import hashlib
 import json
 import os
@@ -119,10 +120,9 @@ def _save(state: dict) -> None:
             os.fsync(fh.fileno())
         os.replace(tmp, path)
     except BaseException:
-        try:
+        # Best-effort cleanup of the temp file; the original error is what matters.
+        with contextlib.suppress(OSError):
             os.unlink(tmp)
-        except OSError:
-            pass
         raise
 
 
