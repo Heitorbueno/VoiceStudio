@@ -3706,5 +3706,21 @@
       "remove_file": "Retirer",
       "no_matches": "Aucun résultat pour \"{{query}}\"."
     }
+  },
+  "mcp_connector": {
+    "title": "Connecteur Claude / ChatGPT",
+    "desc": "Ajoutez cette URL comme connecteur personnalisé dans Claude ou ChatGPT. Chaque nouvelle connexion demande votre accord ici.",
+    "url_label": "URL du connecteur",
+    "copy": "Copier l’URL",
+    "copied": "Copié",
+    "empty": "Aucun connecteur autorisé pour l’instant.",
+    "load_failed": "Impossible de charger le connecteur",
+    "revoke": "Révoquer {{name}}",
+    "revoke_confirm": "Révoquer l’accès de « {{name}} » ? Il faudra l’autoriser à nouveau pour utiliser VoiceStudio.",
+    "authorize_title": "Autoriser le connecteur",
+    "authorize_desc": "{{name}} ({{host}}) souhaite utiliser les outils de VoiceStudio : générer de la voix, cloner des voix et transcrire de l’audio.",
+    "approve": "Autoriser",
+    "deny": "Refuser",
+    "expired": "Cette demande d’autorisation a expiré. Relancez la connexion depuis Claude ou ChatGPT."
   }
 }

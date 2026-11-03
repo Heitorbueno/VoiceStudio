@@ -2,6 +2,7 @@
 # Guards against accidental endpoint removal/rename (tests/test_api_route_inventory.py).
 DELETE /api/auth/session
 DELETE /api/mcp/bindings/{client_id}
+DELETE /api/mcp/oauth/connections/{client_id}
 DELETE /api/settings/hf-token
 DELETE /batch/jobs/{job_id}
 DELETE /calls/{call_id}
@@ -23,9 +24,16 @@ DELETE /profiles/{profile_id}
 DELETE /profiles/{profile_id}/consent
 DELETE /projects/{project_id}
 DELETE /pronunciation/{entry_id}
+GET /.well-known/oauth-authorization-server
+GET /.well-known/oauth-authorization-server/mcp
+GET /.well-known/oauth-protected-resource
+GET /.well-known/oauth-protected-resource/mcp
 GET /.well-known/voicestudio-speech
 GET /api/integrations/twilio/state
 GET /api/mcp/bindings
+GET /api/mcp/oauth/connections
+GET /api/mcp/oauth/info
+GET /api/mcp/oauth/requests/{request_id}
 GET /api/settings/analytics
 GET /api/settings/asr-openai-compat
 GET /api/settings/changelog
@@ -134,6 +142,7 @@ GET /models/install/status
 GET /models/licenses/acceptance/{repo_id:path}
 GET /models/licenses/details/{repo_id:path}
 GET /models/licenses/receipts/{plan_digest}
+GET /oauth/authorize
 GET /openapi.json
 GET /personalities
 GET /preview/{filename}
@@ -180,6 +189,7 @@ PATCH /projects/{project_id}
 POST /api/auth/session
 POST /api/auth/ws-ticket
 POST /api/integrations/twilio/test
+POST /api/mcp/oauth/requests/{request_id}/decision
 POST /api/settings/asr-openai-compat/test
 POST /api/settings/hf-mirror/test
 POST /api/settings/hf-token
@@ -266,6 +276,9 @@ POST /models/install/prepare
 POST /models/licenses/accept
 POST /models/licenses/revoke
 POST /models/licenses/verify/{plan_digest}
+POST /oauth/register
+POST /oauth/revoke
+POST /oauth/token
 POST /personas/export/{profile_id}
 POST /personas/import
 POST /personas/inspect

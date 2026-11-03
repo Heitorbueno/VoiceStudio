@@ -390,6 +390,7 @@ from core.auth import (
     PrincipalKind,
     credential_matches,
     is_local_host,
+    is_mcp_path,
     principal_for,
     remote_api_key,
 )
@@ -741,6 +742,7 @@ def _phase_a_build_inner() -> None:
         voice_convert,  # Studio Convert: speech-to-speech via ASR → TTS
     )
     from api.routers import mcp_bindings as _mcp_bindings_router  # noqa: E402
+    from api.routers import mcp_oauth as _mcp_oauth_router
     from api.routers import telephony_twilio as _telephony_twilio_router  # noqa: E402
     from api.routers import calls as _calls_router  # noqa: E402
     _router_modules.extend([
@@ -750,7 +752,7 @@ def _phase_a_build_inner() -> None:
         batch, watermark, events, capture, capture_ws, speech_platform, dictation,
         openai_compat, tts_stream, marketplace, personas, sonitranslate,
         audiobook, longform_jobs, pronunciation, settings_router,
-        media_tools_router, auth_router, _mcp_bindings_router,
+        media_tools_router, auth_router, _mcp_bindings_router, _mcp_oauth_router,
         _telephony_twilio_router, _calls_router,
     ])
     # Download-acceleration state, once, for triage-from-logs (FDL-03).
@@ -1651,7 +1653,18 @@ def _is_public_path(path: str) -> bool:
         or path.startswith("/assets/")
         or path.startswith("/favicon")
         or path == "/api/auth/session"
+        or _is_mcp_oauth_public_path(path)
     )
+
+
+#: OAuth endpoints of the MCP connector. They carry no ambient credential
+#: (each validates its own client, code or token), so every gate lets them
+#: through, and a connector's server-side calls are never "cross-site".
+_MCP_OAUTH_PUBLIC = {"/oauth/register", "/oauth/authorize", "/oauth/token", "/oauth/revoke"}
+
+
+def _is_mcp_oauth_public_path(path: str) -> bool:
+    return path in _MCP_OAUTH_PUBLIC or path.startswith("/.well-known/oauth-")
 
 # Paths that answer while deferred startup is still running. The shutdown
 # signal must exist before the ordinary system router so a bounded Windows
@@ -1836,13 +1849,26 @@ class BearerKeyMiddleware:
             PrincipalKind.TRUSTED_NETWORK,
             PrincipalKind.API_KEY,
             PrincipalKind.ADMIN_SESSION,
+            PrincipalKind.MCP_OAUTH,
         }:
             if scope["type"] == "websocket":
                 # Reject the handshake; 1008 = policy violation.
                 await receive()  # consume websocket.connect
                 await send({"type": "websocket.close", "code": 1008})
                 return
-            resp = JSONResponse({"detail": "API key required"}, status_code=401)
+            headers = None
+            if is_mcp_path(scope.get("path", "")):
+                # RFC 9728: tells Claude / ChatGPT where to start OAuth.
+                from api.routers.mcp_oauth import resource_metadata_url
+                from starlette.requests import Request as _Request
+
+                headers = {
+                    "WWW-Authenticate": (
+                        'Bearer resource_metadata="'
+                        f'{resource_metadata_url(_Request(scope))}"'
+                    )
+                }
+            resp = JSONResponse({"detail": "API key required"}, status_code=401, headers=headers)
             return await resp(scope, receive, send)
         if (
             scope["type"] == "http"
@@ -1905,7 +1931,11 @@ app.add_middleware(BearerKeyMiddleware)
 # address this backend by an unrecognized host name (DNS rebinding). Just
 # inside CORS so preflights reach CORS and refusals keep their CORS headers.
 from core.browser_guard import BrowserGuardMiddleware
-app.add_middleware(BrowserGuardMiddleware, is_public_path=_is_public_path)
+app.add_middleware(
+    BrowserGuardMiddleware,
+    is_public_path=_is_public_path,
+    allows_cross_site=_is_mcp_oauth_public_path,
+)
 
 app.add_middleware(
     CORSMiddleware,

@@ -3704,5 +3704,21 @@
       "remove_file": "제거",
       "no_matches": "\"{{query}}\"에 대한 결과가 없습니다."
     }
+  },
+  "mcp_connector": {
+    "title": "Claude / ChatGPT 커넥터",
+    "desc": "이 URL을 Claude 또는 ChatGPT에 사용자 지정 커넥터로 추가하세요. 새 연결마다 여기에서 승인이 필요합니다.",
+    "url_label": "커넥터 URL",
+    "copy": "URL 복사",
+    "copied": "복사됨",
+    "empty": "아직 승인된 커넥터가 없습니다.",
+    "load_failed": "커넥터를 불러오지 못했습니다",
+    "revoke": "{{name}} 액세스 취소",
+    "revoke_confirm": "“{{name}}”의 액세스를 취소할까요? VoiceStudio를 사용하려면 다시 승인해야 합니다.",
+    "authorize_title": "커넥터 승인",
+    "authorize_desc": "{{name}}({{host}})이(가) VoiceStudio 도구(음성 생성, 음성 복제, 오디오 전사)를 사용하려고 합니다.",
+    "approve": "허용",
+    "deny": "거부",
+    "expired": "이 승인 요청이 만료되었습니다. Claude 또는 ChatGPT에서 다시 연결하세요."
   }
 }

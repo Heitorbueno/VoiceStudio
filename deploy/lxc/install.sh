@@ -84,11 +84,20 @@ EOF
   chmod 600 "$ENV_FILE"
   echo "    Chave de administrador gerada em $ENV_FILE (OMNIVOICE_API_KEY)"
 fi
+# Conector MCP (Claude/ChatGPT): URL pública fixa (metadados OAuth) e host aceito
+# pelo /mcp. Acrescentado também em instalações antigas, sem tocar no resto.
+ensure_env() { grep -q "^$1=" "$ENV_FILE" || echo "$1=$2" >> "$ENV_FILE"; }
+if [ "$PROXY" != "none" ]; then
+  ensure_env OMNIVOICE_PUBLIC_URL "https://$DOMAIN"
+  ensure_env OMNIVOICE_MCP_ALLOWED_HOSTS "$DOMAIN"
+fi
 
 install -m 644 "$APP_DIR/deploy/lxc/voicestudio.service" /etc/systemd/system/voicestudio.service
 sed -i "s#__APP_DIR__#$APP_DIR#g; s#__DATA_DIR__#$DATA_DIR#g" /etc/systemd/system/voicestudio.service
 systemctl daemon-reload
-systemctl enable --now voicestudio
+systemctl enable voicestudio
+# restart (não --now): numa atualização o serviço já roda e precisa carregar o código novo.
+systemctl restart voicestudio
 
 if [ "$PROXY" = "caddy" ]; then
   echo "==> Caddy (HTTPS automático)"
@@ -119,3 +128,4 @@ echo "==> Aguardando /health"
 for _ in $(seq 1 60); do curl -sf "http://127.0.0.1:$PORT/health" && break; sleep 3; done
 echo
 echo "Pronto: https://$DOMAIN  (login com a OMNIVOICE_API_KEY de $ENV_FILE)"
+echo "Conector MCP (Claude/ChatGPT): https://$DOMAIN/mcp  — Configurações → Compartilhamento"

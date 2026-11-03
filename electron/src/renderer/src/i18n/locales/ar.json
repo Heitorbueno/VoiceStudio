@@ -3712,5 +3712,21 @@
       "remove_file": "إزالة",
       "no_matches": "لا نتائج لـ \"{{query}}\"."
     }
+  },
+  "mcp_connector": {
+    "title": "موصّل Claude / ChatGPT",
+    "desc": "أضف هذا العنوان كموصّل مخصص في Claude أو ChatGPT. كل اتصال جديد يطلب موافقتك هنا.",
+    "url_label": "عنوان الموصّل",
+    "copy": "نسخ العنوان",
+    "copied": "تم النسخ",
+    "empty": "لا يوجد موصّل مصرّح له بعد.",
+    "load_failed": "تعذّر تحميل الموصّل",
+    "revoke": "إلغاء {{name}}",
+    "revoke_confirm": "هل تريد إلغاء وصول «{{name}}»؟ سيلزم التصريح له مجددًا لاستخدام VoiceStudio.",
+    "authorize_title": "التصريح للموصّل",
+    "authorize_desc": "يريد {{name}} ({{host}}) استخدام أدوات VoiceStudio: توليد الكلام واستنساخ الأصوات وتفريغ الصوت.",
+    "approve": "سماح",
+    "deny": "رفض",
+    "expired": "انتهت صلاحية طلب التصريح هذا. ابدأ الاتصال من جديد من Claude أو ChatGPT."
   }
 }

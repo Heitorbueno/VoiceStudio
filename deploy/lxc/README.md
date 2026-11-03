@@ -27,12 +27,25 @@ A chave de acesso fica em `/etc/voicestudio.env` (`OMNIVOICE_API_KEY`) — `grep
 Abra o domínio, entre com a chave e, na primeira geração, aceite a licença do modelo no
 Model Catalogue (download ≈ 2,4 GB do Hugging Face).
 
+## Conector Claude / ChatGPT (MCP)
+1. No VoiceStudio: **Configurações → Compartilhamento → Conector Claude / ChatGPT** → copie a URL
+   (`https://voicestudio.liderautomacoes.com.br/mcp`).
+2. Claude: *Configurações → Conectores → Adicionar conector personalizado* e cole a URL.
+   ChatGPT: *Configurações → Conectores* (modo desenvolvedor) → *Criar* e cole a URL.
+3. O navegador abre o VoiceStudio: entre com a chave, confira o cliente e clique **Permitir**.
+
+O conector usa OAuth (PKCE + aprovação sua a cada conexão); a chave de administrador nunca sai da LXC.
+O token do conector só vale em `/mcp` e não acessa a API de administração. Para cortar o acesso,
+revogue a conexão no mesmo cartão. O instalador grava `OMNIVOICE_PUBLIC_URL` e
+`OMNIVOICE_MCP_ALLOWED_HOSTS` no `/etc/voicestudio.env` (também em instalações antigas, ao atualizar).
+Com Cloudflare Access ativo, crie *Bypass* para `/mcp`, `/oauth/*` e `/.well-known/*`.
+
 ## Segurança
 - Backend escuta só em `127.0.0.1`; o `cloudflared` é o único caminho externo.
 - Uvicorn confia em `X-Forwarded-For` só vindo de `127.0.0.1` e usa o IP mais à direita (o que a
   Cloudflare acrescenta): `X-Forwarded-For: 127.0.0.1` forjado por um cliente não dá acesso.
 - Opcional, camada extra: Zero Trust → **Access → Applications** com login por e-mail no domínio.
-  Se ativar, crie uma regra *Bypass* para `/v1/*` e `/mcp` caso use a API/MCP fora do navegador.
+  Se ativar, crie uma regra *Bypass* para `/v1/*`, `/mcp`, `/oauth/*` e `/.well-known/*` caso use a API/MCP fora do navegador.
 
 ## Limites da Cloudflare (plano Free)
 - Upload máximo de **100 MB** por requisição (vídeos grandes para dublagem: use links/URL ou corte o arquivo)

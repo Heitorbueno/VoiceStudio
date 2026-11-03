@@ -46,6 +46,10 @@ const SettingsPage = lazyRouteComponent(
   'SettingsPage',
 );
 const ProPage = lazyRouteComponent(() => import('@/features/pro/pro-page'), 'ProPage');
+const McpAuthorizePage = lazyRouteComponent(
+  () => import('@/features/settings/mcp-authorize-page'),
+  'McpAuthorizePage',
+);
 
 export const rootRoute = createRootRoute({ component: AppShell });
 
@@ -259,7 +263,14 @@ export const diagnosticsRoute = createRoute({
   path: '/settings/diagnostics',
   component: SettingsPage,
 });
+/** OAuth consent for a Claude / ChatGPT connector (`/oauth/authorize` lands here). */
+export const mcpAuthorizeRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/mcp-authorize',
+  component: McpAuthorizePage,
+});
 export const routeTree = rootRoute.addChildren([
+  mcpAuthorizeRoute,
   diagnosticsRoute,
   openApiRoute,
   updatesRoute,

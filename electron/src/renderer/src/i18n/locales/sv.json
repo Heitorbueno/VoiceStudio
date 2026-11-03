@@ -3704,5 +3704,21 @@
       "remove_file": "Ta bort",
       "no_matches": "Inga träffar för \"{{query}}\"."
     }
+  },
+  "mcp_connector": {
+    "title": "Claude-/ChatGPT-koppling",
+    "desc": "Lägg till den här URL:en som anpassad koppling i Claude eller ChatGPT. Varje ny anslutning kräver ditt godkännande här.",
+    "url_label": "Kopplingens URL",
+    "copy": "Kopiera URL",
+    "copied": "Kopierad",
+    "empty": "Ingen koppling har godkänts än.",
+    "load_failed": "Det gick inte att läsa in kopplingen",
+    "revoke": "Återkalla {{name}}",
+    "revoke_confirm": "Återkalla åtkomsten för ”{{name}}”? Den måste godkännas igen för att använda VoiceStudio.",
+    "authorize_title": "Godkänn koppling",
+    "authorize_desc": "{{name}} ({{host}}) vill använda VoiceStudios verktyg: generera tal, klona röster och transkribera ljud.",
+    "approve": "Tillåt",
+    "deny": "Neka",
+    "expired": "Begäran om godkännande har gått ut. Starta anslutningen igen från Claude eller ChatGPT."
   }
 }

@@ -3708,5 +3708,21 @@
       "remove_file": "Usuń",
       "no_matches": "Brak wyników dla \"{{query}}\"."
     }
+  },
+  "mcp_connector": {
+    "title": "Łącznik Claude / ChatGPT",
+    "desc": "Dodaj ten adres URL jako niestandardowy łącznik w Claude lub ChatGPT. Każde nowe połączenie wymaga tutaj Twojej zgody.",
+    "url_label": "Adres URL łącznika",
+    "copy": "Kopiuj URL",
+    "copied": "Skopiowano",
+    "empty": "Brak autoryzowanych łączników.",
+    "load_failed": "Nie udało się wczytać łącznika",
+    "revoke": "Odwołaj {{name}}",
+    "revoke_confirm": "Odwołać dostęp dla „{{name}}”? Aby korzystać z VoiceStudio, trzeba będzie go ponownie autoryzować.",
+    "authorize_title": "Autoryzuj łącznik",
+    "authorize_desc": "{{name}} ({{host}}) chce używać narzędzi VoiceStudio: generowania mowy, klonowania głosów i transkrypcji dźwięku.",
+    "approve": "Zezwól",
+    "deny": "Odmów",
+    "expired": "Ta prośba o autoryzację wygasła. Rozpocznij połączenie ponownie z Claude lub ChatGPT."
   }
 }

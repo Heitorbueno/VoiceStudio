@@ -11,13 +11,17 @@ metadata and the backend fallback mirror it.
 **Highlights**
 
 - Preview iOS and Android companion apps for your own VoiceStudio
+- Add a remote VoiceStudio to Claude or ChatGPT as a custom connector
 
 ### Added
+
+- Claude and ChatGPT custom connector: OAuth (PKCE, your approval per connection, revocable) for a remote `/mcp`, with the URL under Settings → Sharing ([guide](docs/mcp.md))
 
 - Preview iOS and Android companion apps: drive your own VoiceStudio from your phone (speak, voices and cloning, dubbing, dictation) after pairing by QR code; build from source for now ([guide](docs/mobile.md)) (#2965)
 
 ### Fixed
 
+- LXC installer restarts the service on update so new code actually loads
 - Windows runtime refresh no longer fails with `EPERM` on a locked backend folder (OneDrive, antivirus): it updates the files in place; the missing-Python-environment message now names the exact folder and tells non-checkout installs to use the installer (#3023) — thanks @afraniohugo, @javalovelinux-cmd and @eduardpp00!
 
 ### Docs

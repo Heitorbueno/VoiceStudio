@@ -3704,5 +3704,21 @@
       "remove_file": "Xóa",
       "no_matches": "Không có kết quả cho \"{{query}}\"."
     }
+  },
+  "mcp_connector": {
+    "title": "Trình kết nối Claude / ChatGPT",
+    "desc": "Thêm URL này làm trình kết nối tùy chỉnh trong Claude hoặc ChatGPT. Mỗi kết nối mới đều cần bạn phê duyệt tại đây.",
+    "url_label": "URL trình kết nối",
+    "copy": "Sao chép URL",
+    "copied": "Đã sao chép",
+    "empty": "Chưa có trình kết nối nào được cấp quyền.",
+    "load_failed": "Không tải được trình kết nối",
+    "revoke": "Thu hồi {{name}}",
+    "revoke_confirm": "Thu hồi quyền truy cập của “{{name}}”? Cần cấp quyền lại để dùng VoiceStudio.",
+    "authorize_title": "Cấp quyền cho trình kết nối",
+    "authorize_desc": "{{name}} ({{host}}) muốn dùng công cụ của VoiceStudio: tạo giọng nói, nhân bản giọng và chép lời âm thanh.",
+    "approve": "Cho phép",
+    "deny": "Từ chối",
+    "expired": "Yêu cầu cấp quyền này đã hết hạn. Hãy bắt đầu kết nối lại từ Claude hoặc ChatGPT."
   }
 }

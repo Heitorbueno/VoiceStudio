@@ -3704,5 +3704,21 @@
       "remove_file": "移除",
       "no_matches": "找不到符合「{{query}}」的結果。"
     }
+  },
+  "mcp_connector": {
+    "title": "Claude / ChatGPT 連接器",
+    "desc": "將此 URL 作為自訂連接器新增至 Claude 或 ChatGPT。每個新連線都需要在這裡取得你的核准。",
+    "url_label": "連接器 URL",
+    "copy": "複製 URL",
+    "copied": "已複製",
+    "empty": "尚未授權任何連接器。",
+    "load_failed": "無法載入連接器",
+    "revoke": "撤銷 {{name}}",
+    "revoke_confirm": "要撤銷「{{name}}」的存取權嗎？之後需重新授權才能使用 VoiceStudio。",
+    "authorize_title": "授權連接器",
+    "authorize_desc": "{{name}}（{{host}}）想要使用 VoiceStudio 的工具：產生語音、複製聲音和轉錄音訊。",
+    "approve": "允許",
+    "deny": "拒絕",
+    "expired": "此授權請求已過期。請從 Claude 或 ChatGPT 重新發起連線。"
   }
 }

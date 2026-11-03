@@ -3704,5 +3704,21 @@
       "remove_file": "Hapus",
       "no_matches": "Tidak ada hasil untuk \"{{query}}\"."
     }
+  },
+  "mcp_connector": {
+    "title": "Konektor Claude / ChatGPT",
+    "desc": "Tambahkan URL ini sebagai konektor kustom di Claude atau ChatGPT. Setiap koneksi baru meminta persetujuan Anda di sini.",
+    "url_label": "URL konektor",
+    "copy": "Salin URL",
+    "copied": "Disalin",
+    "empty": "Belum ada konektor yang diotorisasi.",
+    "load_failed": "Gagal memuat konektor",
+    "revoke": "Cabut {{name}}",
+    "revoke_confirm": "Cabut akses “{{name}}”? Konektor harus diotorisasi lagi untuk memakai VoiceStudio.",
+    "authorize_title": "Otorisasi konektor",
+    "authorize_desc": "{{name}} ({{host}}) ingin memakai alat VoiceStudio: membuat ucapan, mengkloning suara, dan mentranskripsi audio.",
+    "approve": "Izinkan",
+    "deny": "Tolak",
+    "expired": "Permintaan otorisasi ini sudah kedaluwarsa. Mulai koneksi lagi dari Claude atau ChatGPT."
   }
 }
