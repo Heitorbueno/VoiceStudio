@@ -29,11 +29,23 @@ SVC_USER=voicestudio
 # lock do apt; sem esperar, o primeiro apt-get falha com "Could not get lock".
 apt-get() { command apt-get -o DPkg::Lock::Timeout=900 "$@"; }
 wait_apt() {
+  # Confere o lock de verdade (fcntl, o mesmo que o dpkg usa). Nome de processo não
+  # serve: o Ubuntu mantém o unattended-upgrade-shutdown sempre vivo, sem segurar lock.
   local n=0
-  # -x casa o nome do processo (truncado em 15 caracteres), nunca a linha de comando
-  # de quem chama: unattended-upgrade, apt.systemd.daily, apt, apt-get, dpkg.
-  while pgrep -x 'unattended-upgr|apt.systemd.dai|apt|apt-get|dpkg' >/dev/null 2>&1; do
-    [ "$n" -eq 0 ] && echo "    Aguardando atualizações automáticas do sistema terminarem..."
+  while ! python3 - <<'PY' 2>/dev/null
+import fcntl, os, sys
+for p in ("/var/lib/dpkg/lock-frontend", "/var/lib/dpkg/lock", "/var/lib/apt/lists/lock"):
+    if not os.path.exists(p):
+        continue
+    with open(p, "a") as f:
+        try:
+            fcntl.lockf(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            fcntl.lockf(f, fcntl.LOCK_UN)
+        except OSError:
+            sys.exit(1)
+PY
+  do
+    [ "$n" -eq 0 ] && echo "    Aguardando atualizações automáticas do sistema liberarem o apt..."
     n=$((n + 1)); [ "$n" -ge 180 ] && break
     sleep 5
   done
