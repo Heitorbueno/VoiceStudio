@@ -25,7 +25,22 @@ SVC_USER=voicestudio
 
 [ "$(uname -m)" = "x86_64" ] || { echo "Somente x86_64 é suportado"; exit 1; }
 
+# Logo após criar/ligar a LXC o Ubuntu roda as atualizações automáticas e segura o
+# lock do apt; sem esperar, o primeiro apt-get falha com "Could not get lock".
+apt-get() { command apt-get -o DPkg::Lock::Timeout=900 "$@"; }
+wait_apt() {
+  local n=0
+  # -x casa o nome do processo (truncado em 15 caracteres), nunca a linha de comando
+  # de quem chama: unattended-upgrade, apt.systemd.daily, apt, apt-get, dpkg.
+  while pgrep -x 'unattended-upgr|apt.systemd.dai|apt|apt-get|dpkg' >/dev/null 2>&1; do
+    [ "$n" -eq 0 ] && echo "    Aguardando atualizações automáticas do sistema terminarem..."
+    n=$((n + 1)); [ "$n" -ge 180 ] && break
+    sleep 5
+  done
+}
+
 echo "==> Pacotes do sistema"
+wait_apt
 apt-get update -qq
 apt-get install -y -qq git curl ca-certificates build-essential ffmpeg libsndfile1 unzip python3
 

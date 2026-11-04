@@ -22,6 +22,7 @@ metadata and the backend fallback mirror it.
 ### Fixed
 
 - LXC installer restarts the service on update so new code actually loads (#6)
+- LXC installer waits for the system's automatic updates to release apt instead of failing with "Could not get lock" (#7)
 - Windows runtime refresh no longer fails with `EPERM` on a locked backend folder (OneDrive, antivirus): it updates the files in place; the missing-Python-environment message now names the exact folder and tells non-checkout installs to use the installer (#3023) — thanks @afraniohugo, @javalovelinux-cmd and @eduardpp00!
 
 ### Docs
